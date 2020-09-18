@@ -63,7 +63,11 @@ public class CliDownloader {
             String filename = snykWrapperFileName();
             String downloadURL = String.format(LATEST_RELEASE_DOWNLOAD_URL, latestVersion, filename);
             log.lifecycle("Download version {} of {}", latestVersion, filename);
-            download(downloadURL, "snyk");
+            if (DefaultNativePlatform.getCurrentOperatingSystem().isWindows()) {
+                download(downloadURL, "snyk.exe");
+            } else {
+                download(downloadURL, "snyk");
+            }
             return latestVersion;
         } catch (IOException e) {
             throw new GradleException("Unable to download latest snyk CLI binary", e);

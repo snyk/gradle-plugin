@@ -4,6 +4,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform;
 
 public class SnykTestTask extends DefaultTask {
 
@@ -19,8 +20,23 @@ public class SnykTestTask extends DefaultTask {
         authentication();
         setExtensionData();
 
-        String command = "snyk test";
+        Runner.Result output = runSnykTest("snyk test");
+        if (output.failed()) {
+            if (DefaultNativePlatform.getCurrentOperatingSystem().isWindows()) {
+                output = runSnykTest("snyk.exe test");
+            } else {
+                output = runSnykTest("./snyk test");
+            }
+        }
+        log.lifecycle(output.output);
 
+        log.debug("severity: {}", severity);
+        if (output.exitcode > 0 && severity != null) {
+            throw new GradleException("Snyk Test failed");
+        }
+    }
+
+    private Runner.Result runSnykTest(String command) {
         if (arguments != null) {
             command += " " + arguments;
         }
@@ -28,14 +44,8 @@ public class SnykTestTask extends DefaultTask {
         if (severity != null) {
             command += " --severity-threshold=" + severity;
         }
-
-        Runner.Result output = Runner.runCommand(command);
-        log.lifecycle(output.output);
-
-        log.debug("severity: {}", severity);
-        if (output.exitcode > 0 && severity != null) {
-            throw new GradleException("Snyk Test failed");
-        }
+        log.debug(command);
+        return Runner.runCommand(command);
     }
 
     private void authentication() {
