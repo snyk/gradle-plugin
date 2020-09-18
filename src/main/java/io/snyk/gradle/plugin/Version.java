@@ -1,5 +1,8 @@
 package io.snyk.gradle.plugin;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class Version implements Comparable<Version> {
 
     public final int[] numbers;
@@ -10,11 +13,11 @@ public class Version implements Comparable<Version> {
     }
 
     private Version(String version) {
-        this.literal = version;
-        final String split[] = literal.split("\\-")[0].split("\\.");
+        this.literal = version.trim();
+        final String[] split = literal.split("\\-")[0].split("\\.");
         numbers = new int[split.length];
         for (int i = 0; i < split.length; i++) {
-            numbers[i] = Integer.valueOf(split[i]);
+            numbers[i] = Integer.parseInt(split[i]);
         }
     }
 
@@ -31,6 +34,21 @@ public class Version implements Comparable<Version> {
         return 0;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Version version = (Version) o;
+        return Arrays.equals(numbers, version.numbers) &&
+                Objects.equals(literal, version.literal);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(literal);
+        result = 31 * result + Arrays.hashCode(numbers);
+        return result;
+    }
 
     public boolean isGreaterThan(Version next) {
         return this.compareTo(next) > 0;

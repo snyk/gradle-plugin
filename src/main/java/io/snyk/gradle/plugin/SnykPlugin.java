@@ -8,11 +8,9 @@ import org.gradle.api.logging.Logger;
 
 public class SnykPlugin implements Plugin<Project> {
 
-    private Logger log;
-
     @Override
     public void apply(Project project) {
-        this.log = project.getLogger();
+        Logger log = project.getLogger();
         log.debug("Plugin loaded");
         project.getExtensions().create("snyk", SnykExtension.class);
 
