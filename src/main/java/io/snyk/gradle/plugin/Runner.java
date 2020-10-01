@@ -11,6 +11,10 @@ public class Runner {
     private Runner() {
     }
 
+    public static Result runSnyk(String task) {
+        return runCommand(Meta.getInstance().getBinary() + " " + task);
+    }
+
     public static Result runCommand(String task) {
         try {
             Process process = Runtime.getRuntime().exec(task);
@@ -64,6 +68,14 @@ public class Runner {
 
         public boolean failed() {
             return exitcode != 0;
+        }
+
+        @Override
+        public String toString() {
+            return "Result{" +
+                    "output='" + output + '\'' +
+                    ", exitcode=" + exitcode +
+                    '}';
         }
     }
 }

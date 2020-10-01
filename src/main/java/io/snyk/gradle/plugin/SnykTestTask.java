@@ -4,7 +4,6 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform;
 
 public class SnykTestTask extends DefaultTask {
 
@@ -17,17 +16,10 @@ public class SnykTestTask extends DefaultTask {
     @TaskAction
     public void doSnykTest() {
         log.debug("Snyk Test Task");
-        authentication();
         setExtensionData();
+        authentication();
 
-        Runner.Result output = runSnykTest("snyk test");
-        if (output.failed()) {
-            if (DefaultNativePlatform.getCurrentOperatingSystem().isWindows()) {
-                output = runSnykTest("snyk.exe test");
-            } else {
-                output = runSnykTest("./snyk test");
-            }
-        }
+        Runner.Result output = runSnykTest();
         log.lifecycle(output.output);
 
         log.debug("severity: {}", severity);
@@ -36,7 +28,8 @@ public class SnykTestTask extends DefaultTask {
         }
     }
 
-    private Runner.Result runSnykTest(String command) {
+    private Runner.Result runSnykTest() {
+        String command = "test";
         if (arguments != null) {
             command += " " + arguments;
         }
@@ -44,23 +37,29 @@ public class SnykTestTask extends DefaultTask {
         if (severity != null) {
             command += " --severity-threshold=" + severity;
         }
-        log.debug(command);
-        return Runner.runCommand(command);
+        return Runner.runSnyk(command);
     }
 
     private void authentication() {
+        log.debug("check auth");
         String envToken = System.getenv("SNYK_TOKEN");
-        if (envToken != null && !envToken.isEmpty()) return;
+        if (envToken != null && !envToken.isEmpty()) {
+            log.debug("api token found in env");
+            return;
+        }
 
-        String apiConfigToken = Runner.runCommand("snyk config get api").getOutput().trim();
-        if (apiConfigToken != null && !apiConfigToken.isEmpty()) return;
+        String apiConfigToken = Runner.runSnyk("config get api").getOutput().trim();
+        if (apiConfigToken != null && !apiConfigToken.isEmpty()) {
+            log.debug("api token found");
+            return;
+        }
 
         if (api == null || api.isEmpty()) {
             throw new GradleException("No API key found");
         }
 
-        Runner.Result authResult = Runner.runCommand("snyk auth "+api);
-        if (authResult.exitcode != 0) {
+        Runner.Result authResult = Runner.runSnyk("auth "+api);
+        if (authResult.failed()) {
             throw new GradleException("snyk auth went wrong: " + authResult.getOutput());
         }
     }

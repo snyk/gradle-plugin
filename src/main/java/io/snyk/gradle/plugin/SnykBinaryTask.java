@@ -59,17 +59,24 @@ public class SnykBinaryTask extends DefaultTask {
     private Optional<String> getSnykVersion() {
         Runner.Result versionResult = Runner.runCommand("snyk -version");
         if (versionResult.failed()) {
+            Meta.getInstance().setStandAlone(true);
             log.lifecycle("look for standalone binary");
             if (DefaultNativePlatform.getCurrentOperatingSystem().isWindows()) {
                 versionResult = Runner.runCommand("snyk.exe -version");
+                Meta.getInstance().setBinary("snyk.exe");
             } else {
                 versionResult = Runner.runCommand("./snyk -version");
+                Meta.getInstance().setBinary("./snyk");
             }
             if (versionResult.failed()) {
                 log.lifecycle("no snyk standalone found");
                 return Optional.empty();
             }
+        } else {
+            Meta.getInstance().setStandAlone(false);
+            Meta.getInstance().setBinary("snyk");
         }
+
         return Optional.of(versionResult.output.trim());
     }
 }

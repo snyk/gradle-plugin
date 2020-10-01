@@ -23,7 +23,7 @@ public class CliDownloader {
 
     private static final String LATEST_RELEASES_URL = "https://api.github.com/repos/snyk/snyk/releases/latest";
     private static final String LATEST_RELEASE_DOWNLOAD_URL = "https://github.com/snyk/snyk/releases/download/%s/%s";
-    private Logger log;
+    private final Logger log;
 
     public CliDownloader(Logger logger) {
         this.log = logger;
@@ -97,4 +97,6 @@ public class CliDownloader {
 
         Files.setPosixFilePermissions((new File(fileName)).toPath(), perms);
     }
+
+
 }
