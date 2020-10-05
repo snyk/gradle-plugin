@@ -2,7 +2,7 @@ plugins {
     id 'groovy'
     id 'java-gradle-plugin'
     id 'java'
-    id 'maven-publish'
+    id "com.gradle.plugin-publish" version "0.12.0"
 }
 
 apply from: "$rootDir/gradle/functional-test.gradle"
@@ -10,24 +10,22 @@ apply from: "$rootDir/gradle/functional-test.gradle"
 group = 'io.snyk.gradle.plugin'
 version = '0.1'
 
-////  pugin metadata configuration
-//gradlePlugin {
-//    plugins {
-//        myplugin {
-//            id = "io.snyk.gradle.plugin.snyk-gradle-plugin"
-//            implementationClass = "io.snyk.gradle.plugin.SnykPlugin"
-//        }
-//    }
-//}
-// publish to local maven repo for testing
-//publishing {
-//    repositories {
-//        maven {
-//            url "/Users/brianvermeer/.m2/repository"
-//        }
-//    }
-//}
-//  repo for dependences resolution
+pluginBundle {
+    website = 'https://github.com/snyk/gradle-plugin'
+    vcsUrl = 'https://github.com/snyk/gradle-plugin'
+    tags = ['security', 'scanning', 'dependencies']
+}
+
+gradlePlugin {
+    plugins {
+        snykPlugin {
+            id = 'io.snyk.gradle.plugin.snykplugin'
+            displayName = 'Snyk Security Scanner for Gradle'
+            description = 'Find and fix vulnerabilities in you third-party dependencies with this Snyk for Gradle plugin'
+            implementationClass = 'io.snyk.gradle.plugin.SnykPlugin'
+        }
+    }
+}
 
 repositories{
     mavenCentral()
@@ -42,8 +40,6 @@ dependencies {
     testImplementation('org.spockframework:spock-core:1.3-groovy-2.5')
     testImplementation 'junit:junit:4.13'
     testImplementation 'org.mockito:mockito-core:2.7.22'
-
-
 }
 
 
