@@ -1,29 +1,34 @@
 plugins {
+    id 'groovy'
     id 'java-gradle-plugin'
     id 'java'
     id 'maven-publish'
 }
-group 'io.snyk.gradle.plugin'
-version '0.1'
 
-//  pugin metadata configuration
-gradlePlugin {
-    plugins {
-        myplugin {
-            id = "io.snyk.gradle.plugin.snyk-gradle-plugin"
-            implementationClass = "io.snyk.gradle.plugin.SnykPlugin"
-        }
-    }
-}
+apply from: "$rootDir/gradle/functional-test.gradle"
+
+group = 'io.snyk.gradle.plugin'
+version = '0.1'
+
+////  pugin metadata configuration
+//gradlePlugin {
+//    plugins {
+//        myplugin {
+//            id = "io.snyk.gradle.plugin.snyk-gradle-plugin"
+//            implementationClass = "io.snyk.gradle.plugin.SnykPlugin"
+//        }
+//    }
+//}
 // publish to local maven repo for testing
-publishing {
-    repositories {
-        maven {
-            url "/Users/brianvermeer/.m2/repository"
-        }
-    }
-}
+//publishing {
+//    repositories {
+//        maven {
+//            url "/Users/brianvermeer/.m2/repository"
+//        }
+//    }
+//}
 //  repo for dependences resolution
+
 repositories{
     mavenCentral()
 }
@@ -32,6 +37,13 @@ repositories{
 dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
     compile group: 'org.json', name: 'json', version: '20200518'
+
+    testImplementation('org.codehaus.groovy:groovy-all:2.5.12')
+    testImplementation('org.spockframework:spock-core:1.3-groovy-2.5')
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'org.mockito:mockito-core:2.7.22'
+
+
 }
 
 
