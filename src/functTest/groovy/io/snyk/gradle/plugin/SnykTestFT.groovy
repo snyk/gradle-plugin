@@ -7,7 +7,7 @@ import spock.lang.Specification
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
-class SnykPluginFunctionalTest extends Specification {
+class SnykTestFT extends Specification {
     @Rule TemporaryFolder testProjectDir = new TemporaryFolder()
     @Rule TemporaryFolder testFolder = new TemporaryFolder()
     File buildFile
