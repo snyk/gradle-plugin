@@ -19,15 +19,18 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '8.x'
-      - name: Clean build incl Test
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.16.1
+      - name: Install Snyk CLI from NPM
+        run: npm install -g snyk
+      - name: Clean build
         run: |
           chmod +x gradlew
           ./gradlew clean build -x functionalTest
-      - name: Install Snyk CLI
-        run: |
-          curl -Lo ./snyk $(curl -s https://api.github.com/repos/snyk/snyk/releases/latest | grep "browser_download_url.*snyk-linux\"" | cut -d ':' -f 2,3 | tr -d \" | tr -d ' ')
-          chmod +x snyk
+      - name: Functional test
+        run: ./gradlew functionalTest
       - name: Snyk Test
-        run: ./snyk test
+        run: snyk test
       - name: Snyk Monitor
-        run: ./snyk monitor
+        run: snyk monitor
