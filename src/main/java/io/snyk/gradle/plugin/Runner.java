@@ -17,7 +17,7 @@ public class Runner {
 
     public static Result runCommand(String task) {
         try {
-            Process process = Runtime.getRuntime().exec(task);
+            Process process = Runtime.getRuntime().exec(task + " --integration-name=GRADLE_PLUGIN");
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
             BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
