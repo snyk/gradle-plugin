@@ -3,12 +3,13 @@ plugins {
     id 'java-gradle-plugin'
     id 'java'
     id "com.gradle.plugin-publish" version "0.12.0"
+    id 'maven-publish'
 }
 
 apply from: "$rootDir/gradle/functional-test.gradle"
 
 group = 'io.snyk.gradle.plugin'
-version = '0.2'
+version = '0.3'
 
 pluginBundle {
     website = 'https://github.com/snyk/gradle-plugin'
