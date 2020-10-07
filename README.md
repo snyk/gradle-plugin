@@ -8,12 +8,12 @@ Snyk helps you find, fix and monitor for known vulnerabilities in Node.js npm, R
 
 The Snyk Gradle plugin tests and monitors your Gradle dependencies.
 
-| :information_source: This repository is currently a work in progress and yet fully released. This product is also not an official Snyk supported product. It is an open-source community driven iproject that is initialised and partially maintained by Snyk engineers |
+| :information_source: This repository is currently a work in progress and yet fully released. This product is also not an official Snyk supported product. It is an open-source community driven project that is initialised and partially maintained by Snyk engineers |
 | --- |
 
 ## Using the Snyk Plugin for Gradle
 The latest version of the plugin is released at the [Gradle Plugins Portal](https://plugins.gradle.org/plugin/io.snyk.gradle.plugin.snykplugin).
-Inport the plugin using the plugin DSL
+Import the plugin using the plugin DSL
 
 Groovy:
 ```groovy
