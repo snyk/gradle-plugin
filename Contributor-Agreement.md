@@ -6,7 +6,7 @@ This is a binding legal agreement on you and any organization you represent. If 
 
 ## 1. Definitions
 
-**"Contribution"** means any original work, including any modification of or addition to an existing work, that you submit to Snyk Vuln Cost tool repo in any manner for inclusion in any Work.
+**"Contribution"** means any original work, including any modification of or addition to an existing work, that you submit to Snyk Gradle Plugin tool repo in any manner for inclusion in any Work.
 
 **"Snyk", "we"** and **"use"** means Snyk Ltd.
 
