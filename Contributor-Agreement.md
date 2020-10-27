@@ -1,6 +1,6 @@
 # Snyk Gradle Plugin tool contributor agreement
 
-This Snyk Vuln Cost tool Agreement (this **"Agreement"**) applies to any Contribution you make to any Work.
+This Snyk Gradle Plugin tool Agreement (this **"Agreement"**) applies to any Contribution you make to any Work.
 
 This is a binding legal agreement on you and any organization you represent. If you are signing this Agreement on behalf of your employer or other organization, you represent and warrant that you have the authority to agree to this Agreement on behalf of the organization.
 
