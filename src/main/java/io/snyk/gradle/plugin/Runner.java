@@ -18,28 +18,31 @@ public class Runner {
     public static Result runCommand(String task) {
         try {
             Process process = Runtime.getRuntime().exec(task + " --integration-name=GRADLE_PLUGIN");
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            try (
+                BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()))
+            ) {
 
-            String line;
-            StringBuilder content = new StringBuilder();
-            StringBuilder error = new StringBuilder();
-            boolean hasError = false;
-            while ((line = stdInput.readLine()) != null) {
-                content.append("\n");
-                content.append(line);
+                String line;
+                StringBuilder content = new StringBuilder();
+                StringBuilder error = new StringBuilder();
+                boolean hasError = false;
+                while ((line = stdInput.readLine()) != null) {
+                    content.append("\n");
+                    content.append(line);
+                }
+
+                while ((line = stdError.readLine()) != null) {
+                    if (!hasError) hasError = true;
+                    content.append("\n");
+                    error.append(line);
+                }
+
+                process.waitFor();
+                int exitStatus = process.exitValue();
+                String result = content + (hasError ? "Error: " + error : "");
+                return new Result(result, exitStatus);
             }
-
-            while ((line = stdError.readLine()) != null) {
-                if (!hasError) hasError = true;
-                content.append("\n");
-                error.append(line);
-            }
-
-            process.waitFor();
-            int exitStatus = process.exitValue();
-            String result = content.toString() + (hasError ? "Error: " + error.toString() : "");
-            return new Result(result, exitStatus);
 
         } catch (InterruptedException e) {
             throw new GradleException("Internal error", e);

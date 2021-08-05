@@ -33,13 +33,12 @@ public class CliDownloader {
         URL url = new URL(LATEST_RELEASES_URL);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("accept", "application/json");
-        InputStream responseStream = connection.getInputStream();
 
-        String result = new BufferedReader(new InputStreamReader(responseStream))
-                .lines().collect(Collectors.joining("\n"));
-
-        JSONObject json = new JSONObject(result);
-        return json.getString("name");
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            String result = reader.lines().collect(Collectors.joining("\n"));
+            JSONObject json = new JSONObject(result);
+            return json.getString("name");
+        }
     }
 
     private String snykWrapperFileName() {
