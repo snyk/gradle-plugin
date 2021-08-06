@@ -4,7 +4,6 @@ import org.gradle.api.GradleException;
 
 import org.gradle.api.logging.Logger;
 
-import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -42,13 +41,13 @@ public class CliDownloader {
     }
 
     private String snykWrapperFileName() {
-        String os = DefaultNativePlatform.getCurrentOperatingSystem().toFamilyName();
+        OSFamily os = SystemUtil.osFamily();
         switch (os) {
-            case "windows":
+            case WINDOWS:
                 return "snyk-win.exe";
-            case "macos":
+            case MAC_OS:
                 return "snyk-macos";
-            case "linux":
+            case LINUX:
                 return "snyk-linux";
             default:
                 throw new IllegalArgumentException("Unsupported OS: " + os);
@@ -62,7 +61,7 @@ public class CliDownloader {
             String filename = snykWrapperFileName();
             String downloadURL = String.format(LATEST_RELEASE_DOWNLOAD_URL, latestVersion, filename);
             log.lifecycle("Download version {} of {}", latestVersion, filename);
-            if (DefaultNativePlatform.getCurrentOperatingSystem().isWindows()) {
+            if (SystemUtil.isWindows()) {
                 download(downloadURL, "snyk.exe");
             } else {
                 download(downloadURL, "snyk");

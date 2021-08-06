@@ -4,7 +4,6 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -61,7 +60,7 @@ public class SnykBinaryTask extends DefaultTask {
         if (versionResult.failed()) {
             Meta.getInstance().setStandAlone(true);
             log.lifecycle("look for standalone binary");
-            if (DefaultNativePlatform.getCurrentOperatingSystem().isWindows()) {
+            if (SystemUtil.isWindows()) {
                 versionResult = Runner.runCommand("snyk.exe -version");
                 Meta.getInstance().setBinary("snyk.exe");
             } else {
