@@ -21,7 +21,7 @@ gradlePlugin {
         snykPlugin {
             id = 'io.snyk.gradle.plugin.snykplugin'
             displayName = 'Snyk Security Scanner for Gradle'
-            description = 'Find and fix vulnerabilities in you third-party dependencies with this Snyk for Gradle plugin'
+            description = 'Find and fix vulnerabilities in your third-party dependencies with this Snyk for Gradle plugin'
             implementationClass = 'io.snyk.gradle.plugin.SnykPlugin'
         }
     }
