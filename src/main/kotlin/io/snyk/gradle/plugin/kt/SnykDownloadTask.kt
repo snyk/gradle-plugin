@@ -85,8 +85,7 @@ abstract class SnykDownloadTask @Inject constructor(
       val cliChecksumDestination = temporaryDir.resolve(cliChecksumFilename)
       downloadFile(cliChecksumSourceUri, cliChecksumDestination)
 
-      val expectedCliChecksum = cliChecksumDestination.readText()
-        .take(64)
+      val expectedCliChecksum = cliChecksumDestination.readText().takeWhile { !it.isWhitespace() }
 
       val acutalCliChecksum =
         MessageDigest.getInstance(cliChecksumAlgorithm)
