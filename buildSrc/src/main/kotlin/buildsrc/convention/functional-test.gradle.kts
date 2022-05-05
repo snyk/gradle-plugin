@@ -32,13 +32,13 @@ testing {
         }
       }
     }
+
+    tasks.check {
+      dependsOn(functionalTest)
+    }
   }
 }
 
 configurations.named("functionalTestImplementation").configure {
   extendsFrom(configurations.named("testImplementation").get())
-}
-
-tasks.check {
-  dependsOn(testing.suites.named("functTest"))
 }
