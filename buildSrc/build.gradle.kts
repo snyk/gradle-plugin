@@ -8,6 +8,8 @@ plugins {
 
 dependencies {
   implementation(platform(kotlin("bom")))
+
+  implementation(kotlin("gradle-plugin"))
 }
 
 val gradleJvmTarget = "11"

@@ -4,6 +4,8 @@ plugins {
   `java-library`
   buildsrc.convention.`functional-test`
   id("com.gradle.plugin-publish") version "0.21.0"
+  kotlin("jvm")
+  `kotlin-dsl`
 }
 
 group = "io.snyk.gradle.plugin"
