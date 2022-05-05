@@ -7,14 +7,12 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileSystemOperations
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
 abstract class SnykDownloadTask @Inject constructor(
   private val fileOp: FileSystemOperations,
-  private val providers: ProviderFactory,
 ) : DefaultTask() {
 
   @get:Input
@@ -87,17 +85,16 @@ abstract class SnykDownloadTask @Inject constructor(
 
       val expectedCliChecksum = cliChecksumDestination.readText().takeWhile { !it.isWhitespace() }
 
-      val acutalCliChecksum =
-        MessageDigest.getInstance(cliChecksumAlgorithm)
-          .digest(cliDestination.readBytes())
-          .fold("", { str, it -> str + "%02x".format(it) })
+      val actualCliChecksum = MessageDigest.getInstance(cliChecksumAlgorithm)
+        .digest(cliDestination.readBytes())
+        .fold("") { str, it -> str + "%02x".format(it) }
 
-      require(acutalCliChecksum == expectedCliChecksum) {
+      require(actualCliChecksum == expectedCliChecksum) {
         """
-                    Invalid ${cliChecksumAlgorithm} checksum for ${cliDestination}
-                    Expected: $expectedCliChecksum
-                    Actual: $acutalCliChecksum
-                """.trimIndent()
+            Invalid $cliChecksumAlgorithm checksum for $cliDestination
+            Expected: $expectedCliChecksum
+            Actual: $actualCliChecksum
+        """.trimIndent()
       }
     } else {
       logger.lifecycle("Checksum validation for Snyk CLI is disabled")
