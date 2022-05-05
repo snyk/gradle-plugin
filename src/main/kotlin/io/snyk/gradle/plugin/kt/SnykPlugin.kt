@@ -22,6 +22,11 @@ class SnykPlugin : Plugin<Project> {
 
     tasks.register<SnykTask>(SNYK_MONITOR_TASK_NAME) { command.set("monitor") }
     tasks.register<SnykTask>(SNYK_TEST_TASK_NAME) { command.set("test") }
+
+    tasks.register<SnykTask>(SNYK_VERSION_TASK_NAME) {
+      description = "Print the downloaded Snyk CLI version `gradle snykVersion -q`"
+      command.set("-version")
+    }
   }
 
   private fun Project.buildSnykExtension(): SnykExtension {
@@ -118,6 +123,7 @@ class SnykPlugin : Plugin<Project> {
     const val SNYK_DOWNLOAD_TASK_NAME = "snykDownload"
     const val SNYK_MONITOR_TASK_NAME = "snykMonitor"
     const val SNYK_TEST_TASK_NAME = "snykTest"
+    const val SNYK_VERSION_TASK_NAME = "snykVersion"
 
     const val SNYK_TOKEN_ENV_VAR = "SNYK_TOKEN"
   }
