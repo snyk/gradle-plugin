@@ -69,12 +69,8 @@ abstract class SnykTask @Inject constructor(
       result to output.toString().trim()
     }
 
-    logger.quiet(
-      """
-        Executed Snyk, exit value:${result.exitValue}
-        $output
-      """.trimIndent()
-    )
+    logger.lifecycle("Executed Snyk, exit value:${result.exitValue}")
+    logger.quiet(output)
   }
 
   companion object {
