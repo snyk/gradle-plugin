@@ -18,7 +18,6 @@ class SnykPlugin : Plugin<Project> {
 
     project.tasks.withType<SnykTask>().configureEach {
       group = SNYK_TASK_GROUP
-      dependsOn(snykDownloadTask)
       snykCli.convention(snykDownloadTask.flatMap { it.cliFile })
       arguments.convention(extension.defaultArguments)
       snykToken.convention(extension.snykToken)
