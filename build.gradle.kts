@@ -1,11 +1,14 @@
 plugins {
   groovy
-  `java-gradle-plugin`
-  `java-library`
-  buildsrc.convention.`functional-test`
-  id("com.gradle.plugin-publish") version "0.21.0"
-  kotlin("jvm")
+  buildsrc.convention.`kotlin-jvm`
+
   `kotlin-dsl`
+  `java-gradle-plugin`
+
+  buildsrc.convention.`functional-test`
+
+  id("me.qoomon.git-versioning") version "5.2.0"
+  id("com.gradle.plugin-publish") version "0.21.0"
 }
 
 group = "io.snyk.gradle.plugin"
