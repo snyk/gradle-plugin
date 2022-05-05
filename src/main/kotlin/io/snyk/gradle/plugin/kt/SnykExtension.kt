@@ -5,7 +5,7 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 
 abstract class SnykExtension {
-  abstract val apiKey: Property<String>
+  abstract val snykToken: Property<String>
 
   abstract val defaultArguments: ListProperty<String>
   abstract val defaultSeverity: Property<Severity>

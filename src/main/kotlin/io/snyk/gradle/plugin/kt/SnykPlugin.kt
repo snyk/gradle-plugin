@@ -21,7 +21,7 @@ class SnykPlugin : Plugin<Project> {
       dependsOn(snykDownloadTask)
       snykCli.convention(snykDownloadTask.flatMap { it.cliFile })
       arguments.convention(extension.defaultArguments)
-      apiKey.convention(extension.apiKey)
+      snykToken.convention(extension.snykToken)
     }
 
     project.tasks.register<SnykTask>(SNYK_MONITOR_TASK_NAME) { command.set("monitor") }
@@ -30,7 +30,7 @@ class SnykPlugin : Plugin<Project> {
 
   private fun Project.buildSnykExtension(): SnykExtension {
     return extensions.create<SnykExtension>(SNYK_EXTENSION_NAME).apply {
-      apiKey.convention(
+      snykToken.convention(
         providers.environmentVariable(SNYK_TOKEN_ENV_VAR)
           .orElse(project.providers.gradleProperty(SNYK_TOKEN_ENV_VAR))
       )

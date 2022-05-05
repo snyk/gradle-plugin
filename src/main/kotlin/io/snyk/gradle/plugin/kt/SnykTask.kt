@@ -15,7 +15,7 @@ abstract class SnykTask @Inject constructor(
 ) : DefaultTask() {
 
   @get:Input
-  abstract val apiKey: Property<String>
+  abstract val snykToken: Property<String>
 
   @get:Input
   abstract val snykCli: RegularFileProperty
@@ -44,7 +44,7 @@ abstract class SnykTask @Inject constructor(
 
     val (result, output) = ByteArrayOutputStream().use { output ->
       val result = executor.exec {
-        environment(SnykPlugin.SNYK_TOKEN_ENV_VAR, apiKey.get())
+        environment(SnykPlugin.SNYK_TOKEN_ENV_VAR, snykToken.get())
         setExecutable(snykCli)
         commandLine(command.get())
         args = arguments
