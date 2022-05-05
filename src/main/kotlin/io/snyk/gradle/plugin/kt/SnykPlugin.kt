@@ -101,9 +101,9 @@ class SnykPlugin : Plugin<Project> {
 
     const val SNYK_EXTENSION_NAME = "snyk"
 
-    const val SNYK_DOWNLOAD_TASK_NAME = "snyk-download"
-    const val SNYK_MONITOR_TASK_NAME = "snyk-monitor"
-    const val SNYK_TEST_TASK_NAME = "snyk-test"
+    const val SNYK_DOWNLOAD_TASK_NAME = "snykDownload"
+    const val SNYK_MONITOR_TASK_NAME = "snykMonitor"
+    const val SNYK_TEST_TASK_NAME = "snykTest"
 
     const val SNYK_TOKEN_ENV_VAR = "SNYK_TOKEN"
   }
