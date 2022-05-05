@@ -6,25 +6,22 @@ import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.mapProperty
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 
 class SnykPlugin : Plugin<Project> {
-  override fun apply(project: Project) {
 
-    val extension: SnykExtension = project.buildSnykExtension()
+  override fun apply(project: Project): Unit = with(project) {
 
-    val snykDownloadTask = project.buildSnykDownloadTask(extension)
+    val extension: SnykExtension = buildSnykExtension()
 
-    project.tasks.withType<SnykTask>().configureEach {
-      group = SNYK_TASK_GROUP
-      snykCli.convention(snykDownloadTask.flatMap { it.cliFile })
-      arguments.convention(extension.defaultArguments)
-      snykToken.convention(extension.snykToken)
-    }
+    val snykDownloadTask = buildSnykDownloadTask(extension)
 
-    project.tasks.register<SnykTask>(SNYK_MONITOR_TASK_NAME) { command.set("monitor") }
-    project.tasks.register<SnykTask>(SNYK_TEST_TASK_NAME) { command.set("test") }
+    configureEachSnykTask(snykDownloadTask, extension)
+
+    tasks.register<SnykTask>(SNYK_MONITOR_TASK_NAME) { command.set("monitor") }
+    tasks.register<SnykTask>(SNYK_TEST_TASK_NAME) { command.set("test") }
   }
 
   private fun Project.buildSnykExtension(): SnykExtension {
@@ -80,6 +77,24 @@ class SnykPlugin : Plugin<Project> {
       cliFile.convention(
         providers.zip(extension.cliDownloadDir, cliFilename) { dir, filename ->
           dir.file(filename)
+        }
+      )
+    }
+  }
+
+  private fun Project.configureEachSnykTask(
+    snykDownloadTask: TaskProvider<SnykDownloadTask>,
+    extension: SnykExtension,
+  ): Unit {
+    tasks.withType<SnykTask>().configureEach {
+      group = SNYK_TASK_GROUP
+      snykCli.convention(snykDownloadTask.flatMap { it.cliFile })
+      arguments.convention(extension.defaultArguments)
+      snykToken.convention(extension.snykToken)
+
+      environmentVariables.convention(
+        objects.mapProperty<String, String>().apply {
+          put(SNYK_TOKEN_ENV_VAR, extension.snykToken)
         }
       )
     }

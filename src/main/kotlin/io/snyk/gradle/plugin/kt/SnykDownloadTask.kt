@@ -44,7 +44,6 @@ abstract class SnykDownloadTask @Inject constructor(
 
   @TaskAction
   fun exec() {
-
     val cliName = cliFile.get().asFile.name
 
     val cliDestination = temporaryDir.resolve(cliName)

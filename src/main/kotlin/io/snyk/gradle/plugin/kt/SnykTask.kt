@@ -5,14 +5,18 @@ import javax.inject.Inject
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.UntrackedTask
 import org.gradle.process.ExecOperations
 
 @Suppress("UnstableApiUsage") // UntrackedTask is incubating
-@UntrackedTask(because = "The Snyk CLI should always execute the command")
+@UntrackedTask(because = "The Snyk CLI should always execute")
 abstract class SnykTask @Inject constructor(
   private val executor: ExecOperations
 ) : DefaultTask() {
@@ -20,7 +24,7 @@ abstract class SnykTask @Inject constructor(
   @get:Input
   abstract val snykToken: Property<String>
 
-  @get:Input
+  @get:InputFile
   abstract val snykCli: RegularFileProperty
 
   @get:Input
@@ -29,35 +33,60 @@ abstract class SnykTask @Inject constructor(
   @get:Input
   abstract val arguments: ListProperty<String>
 
-  // @get:Input
-  // abstract val severityThreshold: Property<SnykExtension.Severity>
+  @get:Input
+  abstract val environmentVariables: MapProperty<String, String>
+
+  @get:Input
+  @get:Optional
+  abstract val severityThreshold: Property<SnykExtension.Severity?>
+
+  @get:Input
+  @get:Optional
+  abstract val integrationName: Property<String?>
 
   @TaskAction
   fun executeSnykCommand() {
-
     val arguments: MutableList<String> = arguments.getOrElse(emptyList()).toMutableList()
 
-    // if (severityThreshold.isPresent && arguments.none { "--severity" in it }) {
-    //     arguments += "--severity=${severityThreshold.get().cliArg}"
-    // }
+    arguments.add(0, command.get())
+    arguments.addArg("severity", severityThreshold.map { it.cliArg })
+    arguments.addArg("integration-name", integrationName)
 
-    if (arguments.none { "--integration-name" in it }) {
-      arguments += "--integration-name=GRADLE_PLUGIN"
-    }
+    val snykCli = snykCli.get()
 
     val (result, output) = ByteArrayOutputStream().use { output ->
       val result = executor.exec {
-        environment(SnykPlugin.SNYK_TOKEN_ENV_VAR, snykToken.get())
-        setExecutable(snykCli)
-        commandLine(command.get())
+        executable = snykCli.asFile.canonicalPath
+
         args = arguments
+        environment(environmentVariables.get())
+
         standardOutput = output
+        errorOutput = output
+
+        isIgnoreExitValue = true
       }
       result to output.toString().trim()
     }
 
-    result.assertNormalExitValue()
+    logger.quiet(
+      """
+        Executed Snyk, exit value:${result.exitValue}
+        $output
+      """.trimIndent()
+    )
+  }
 
-    logger.lifecycle("Snyk $output")
+  companion object {
+    private fun MutableList<String>.addArg(
+      argName: String,
+      argValue: Provider<String?>,
+    ) {
+
+      val value = argValue.orNull
+      if (value != null && this.none { arg -> "--$argName" in arg }) {
+        this += "--$argName=${value}"
+      }
+    }
   }
 }
