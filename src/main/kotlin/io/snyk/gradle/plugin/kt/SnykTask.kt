@@ -8,8 +8,11 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.UntrackedTask
 import org.gradle.process.ExecOperations
 
+@Suppress("UnstableApiUsage") // UntrackedTask is incubating
+@UntrackedTask(because = "The Snyk CLI should always execute the command")
 abstract class SnykTask @Inject constructor(
   private val executor: ExecOperations
 ) : DefaultTask() {
