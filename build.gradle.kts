@@ -20,11 +20,11 @@ pluginBundle {
 gradlePlugin {
   plugins {
     create("snykPlugin") {
-      id = "io.snyk.gradle.plugin.snykplugin"
+      id = "io.snyk.gradle.plugin.snyk-kt"
       displayName = "Snyk Security Scanner for Gradle"
       description =
         "Find and fix vulnerabilities in you third-party dependencies with this Snyk for Gradle plugin"
-      implementationClass = "io.snyk.gradle.plugin.SnykPlugin"
+      implementationClass = "io.snyk.gradle.plugin.kt.SnykPlugin"
     }
   }
 }
