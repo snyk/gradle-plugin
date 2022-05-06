@@ -25,6 +25,7 @@ gradlePlugin {
       implementationClass = "io.snyk.gradle.plugin.SnykPlugin"
     }
   }
+  testSourceSets(sourceSets.functionalTest.get())
 }
 
 tasks.wrapper {
@@ -35,7 +36,9 @@ tasks.wrapper {
 dependencies {
   implementation("org.json:json:20200518")
 
-  testImplementation("org.spockframework:spock-core:2.0-groovy-2.5")
+  testImplementation("org.spockframework:spock-core:2.1-groovy-3.0") {
+    exclude(group = "org.codehaus.groovy")
+  }
   testImplementation("junit:junit:4.13.1")
   testImplementation("org.mockito:mockito-core:2.7.22")
 }

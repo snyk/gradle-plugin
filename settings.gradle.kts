@@ -1,6 +1,4 @@
-import org.gradle.api.initialization.resolve.RepositoriesMode
-
-rootProject.name = "snyk"
+rootProject.name = "snyk-gradle-plugin"
 
 apply(from = "./buildSrc/repositories.settings.gradle.kts")
 
