@@ -1,6 +1,7 @@
 package buildsrc.convention
 
 plugins {
+  groovy
   `jvm-test-suite`
 }
 
@@ -19,8 +20,15 @@ testing {
       }
 
       sources {
-        java {
-          setSrcDirs(listOf("src/functTest"))
+        project.plugins.withType<GroovyBasePlugin> {
+          groovy {
+            setSrcDirs(listOf("src/functTest/groovy"))
+          }
+        }
+        project.plugins.withType<JavaBasePlugin> {
+          java {
+            setSrcDirs(listOf("src/functTest/java"))
+          }
         }
       }
 
@@ -39,6 +47,7 @@ testing {
   }
 }
 
+// make 'functionalTest' use the same dependencies as 'testImplementation'
 configurations.named("functionalTestImplementation").configure {
   extendsFrom(configurations.named("testImplementation").get())
 }
