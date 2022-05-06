@@ -1,24 +1,21 @@
 package io.snyk.gradle.plugin
 
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
+import spock.lang.TempDir
 import spock.lang.Specification
 
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
-
 class SnykTestFT extends Specification {
-    @Rule TemporaryFolder testProjectDir = new TemporaryFolder()
-    @Rule TemporaryFolder testFolder = new TemporaryFolder()
+    @TempDir File testProjectDir
+    @TempDir File testFolder
     File buildFile
     File testFile
 
 
     def setup() {
 
-        buildFile = testProjectDir.newFile('build.gradle')
-        testFile = testFolder.newFile('build.gradle');
-        def testFileString = testFile.getAbsolutePath();
+        buildFile = new File(testProjectDir, 'build.gradle')
+        testFile = new File(testFolder, 'build.gradle')
+        def testFileString = testFile.getAbsolutePath()
 
         buildFile << """
             plugins {
@@ -57,7 +54,7 @@ class SnykTestFT extends Specification {
 
         when:
         def result = GradleRunner.create()
-            .withProjectDir(testProjectDir.root)
+            .withProjectDir(testProjectDir)
             .withArguments('snyk-test')
             .withPluginClasspath()
             .build()
