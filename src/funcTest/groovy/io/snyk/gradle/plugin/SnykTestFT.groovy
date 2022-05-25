@@ -1,63 +1,56 @@
 package io.snyk.gradle.plugin
 
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
-
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import spock.lang.TempDir
 
 class SnykTestFT extends Specification {
-    @Rule TemporaryFolder testProjectDir = new TemporaryFolder()
-    @Rule TemporaryFolder testFolder = new TemporaryFolder()
+    @TempDir File testProjectDir
+    @TempDir File testFolder
     File buildFile
     File testFile
 
-
     def setup() {
-
-        buildFile = testProjectDir.newFile('build.gradle')
-        testFile = testFolder.newFile('build.gradle');
-        def testFileString = testFile.getAbsolutePath();
+        buildFile = new File(testProjectDir, 'build.gradle')
+        testFile = new File(testFolder, 'build.gradle')
+        def testFileString = testFile.getAbsolutePath()
 
         buildFile << """
             plugins {
                 id 'java'
-                id 'io.snyk.gradle.plugin.snykplugin'
-            } 
-            
+                id 'io.snyk.gradle.plugin.snykplugin' version '0.4'
+            }
+
             repositories{
                 mavenCentral()
             }
-            
+
             snyk {
                 arguments = '--file=$testFileString'
             }
-            
         """
 
         testFile << """
             plugins {
                 id 'java'
-            } 
-            
+            }
+
             repositories{
                 mavenCentral()
             }
-            
+
             dependencies {
                 // This dependency is found on compile classpath of this component and consumers.
                 compile 'com.google.guava:guava:27.0.1-jre'
                 compile 'org.zeroturnaround:zt-zip:1.12'
-            }            
+            }
         """
     }
 
     def "can successfully scan with Snyk Test"() {
-
         when:
         def result = GradleRunner.create()
-            .withProjectDir(testProjectDir.root)
+            .withProjectDir(testProjectDir)
             .withArguments('snyk-test')
             .withPluginClasspath()
             .build()

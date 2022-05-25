@@ -1,10 +1,11 @@
+@file:Suppress("UnstableApiUsage")
+
 plugins {
     groovy
     `java-gradle-plugin`
+    `jvm-test-suite`
     id("com.gradle.plugin-publish") version "1.0.0-rc-2"
 }
-
-apply(from = "$rootDir/gradle/functional-test.gradle")
 
 group = "io.snyk.gradle.plugin"
 version = "0.4"
@@ -28,14 +29,35 @@ gradlePlugin {
 
 // dependencies of this plugin
 dependencies {
-    implementation("org.json:json:20200518")
-
-    testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
-    testImplementation("junit:junit:4.13.1")
-    testImplementation("org.mockito:mockito-core:2.7.22")
+    implementation("org.json:json:20220320")
 }
 
+testing {
+    suites {
+        val test by getting(JvmTestSuite::class) {
+            useJUnit()
+            dependencies {
+                implementation("org.mockito:mockito-core:4.5.1")
+            }
+        }
+        register<JvmTestSuite>("funcTest") {
+            useSpock()
+            dependencies {
+                implementation(project.dependencies.gradleTestKit())
+                implementation(project)
+            }
 
+            targets {
+                all {
+                    testTask.configure {
+                        shouldRunAfter(test)
+                    }
+                }
+            }
+        }
+    }
+}
 
-
-
+tasks.named("check") {
+    dependsOn(testing.suites.named("funcTest"))
+}
