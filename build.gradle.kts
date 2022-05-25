@@ -34,13 +34,15 @@ dependencies {
 
 testing {
     suites {
-        val test by getting(JvmTestSuite::class) {
+        val quickTest by registering(JvmTestSuite::class) {
             useJUnit()
             dependencies {
+                implementation(project.dependencies.gradleApi())
+                implementation(project)
                 implementation("org.mockito:mockito-core:4.5.1")
             }
         }
-        register<JvmTestSuite>("funcTest") {
+        val test by getting(JvmTestSuite::class) {
             useSpock()
             dependencies {
                 implementation(project.dependencies.gradleTestKit())
@@ -50,7 +52,7 @@ testing {
             targets {
                 all {
                     testTask.configure {
-                        shouldRunAfter(test)
+                        shouldRunAfter(quickTest)
                     }
                 }
             }
@@ -59,5 +61,5 @@ testing {
 }
 
 tasks.named("check") {
-    dependsOn(testing.suites.named("funcTest"))
+    dependsOn(testing.suites.named("quickTest"))
 }
