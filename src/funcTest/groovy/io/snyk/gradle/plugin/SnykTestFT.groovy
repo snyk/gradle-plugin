@@ -18,7 +18,7 @@ class SnykTestFT extends Specification {
         buildFile << """
             plugins {
                 id 'java'
-                id 'io.snyk.gradle.plugin.snykplugin' version '0.4'
+                id 'io.snyk.gradle.plugin.snykplugin'
             }
 
             repositories{
