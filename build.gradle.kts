@@ -45,6 +45,7 @@ testing {
             dependencies {
                 implementation(project.dependencies.gradleTestKit())
                 implementation(project)
+                implementation(tasks.named("pluginUnderTestMetadata").map { it.outputs.files })
             }
 
             targets {
