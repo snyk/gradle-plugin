@@ -41,6 +41,17 @@ snyk {
     autoUpdate = true
 }
 ```
+Kotlin:
+```kotlin
+snyk {
+    setArguments("--all-sub-projects")
+    setSeverity("low")
+    setApi("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
+    setAutoDownload(true)
+    setAutoUpdate(true)
+}
+```
+
 all fields are optional
 
 - **arguments** - add extra arguments to the Snyk CLI. See Snyk CLI help for more information. In this example it scans all sub-projects for gradle
