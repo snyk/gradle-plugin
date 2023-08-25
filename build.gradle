@@ -8,7 +8,7 @@ plugins {
 apply from: "$rootDir/gradle/functional-test.gradle"
 
 group = 'io.snyk.gradle.plugin'
-version = '0.4'
+version = '0.5'
 
 pluginBundle {
     website = 'https://github.com/snyk/gradle-plugin'

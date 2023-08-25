@@ -18,14 +18,14 @@ Import the plugin using the plugin DSL
 Groovy:
 ```groovy
 plugins {
-  id "io.snyk.gradle.plugin.snykplugin" version "0.4"
+  id "io.snyk.gradle.plugin.snykplugin" version "0.5"
 }
 ```
 
 Kotlin
 ```kotlin
 plugins {
-  id("io.snyk.gradle.plugin.snykplugin") version "0.4"
+  id("io.snyk.gradle.plugin.snykplugin") version "0.5"
 }
 ```
 
