@@ -18,7 +18,7 @@ public class SnykPlugin implements Plugin<Project> {
                 .setVisible(false)
                 .setDescription("The data artifacts to be processed for this plugin.");
 
-        config.defaultDependencies(dependencies -> dependencies.add(project.getDependencies().create("org.json:json:20230227")));
+        config.defaultDependencies(dependencies -> dependencies.add(project.getDependencies().create("org.json:json:20231013")));
 
 
         SnykTestTask snykTestTask = project.getTasks().create("snyk-test", SnykTestTask.class);
