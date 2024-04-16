@@ -41,9 +41,8 @@ public class CliDownloaderTest {
     public void testLatestVersionNumber() throws IOException {
         String version = downloader.getLatestVersion();
         System.out.println(version);
-        assertTrue(version.startsWith("v"));
-        Version latest = Version.of(version.substring(1, version.length()));
-        assertTrue(latest.isGreaterOrEqualThan(Version.of("1.406.0")));
+        Version latest = Version.of(version);
+        assertTrue(latest.isGreaterOrEqualThan(Version.of("1.1288.0")));
     }
 
     @Test
