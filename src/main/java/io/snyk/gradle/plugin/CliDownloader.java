@@ -4,7 +4,6 @@ import org.gradle.api.GradleException;
 
 import org.gradle.api.logging.Logger;
 
-import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -20,8 +19,8 @@ import java.util.stream.Collectors;
 
 public class CliDownloader {
 
-    private static final String LATEST_RELEASES_URL = "https://api.github.com/repos/snyk/snyk/releases/latest";
-    private static final String LATEST_RELEASE_DOWNLOAD_URL = "https://github.com/snyk/snyk/releases/download/%s/%s";
+    private static final String LATEST_RELEASES_URL = "https://static.snyk.io/cli/latest/release.json";
+    private static final String LATEST_RELEASE_DOWNLOAD_URL = "https://static.snyk.io/cli/v%s/%s";
     private final Logger log;
 
     public CliDownloader(Logger logger) {
@@ -35,9 +34,25 @@ public class CliDownloader {
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
             String result = reader.lines().collect(Collectors.joining("\n"));
-            JSONObject json = new JSONObject(result);
-            return json.getString("name");
+            String version = extractVersion(result);
+            return version;
         }
+    }
+    private String extractVersion(String json) {
+        String versionKey = "\"version\": \"";
+        int startIndex = json.indexOf(versionKey) + versionKey.length();
+        if (startIndex == versionKey.length() - 1) {
+            throw new GradleException("Latest version key not found");
+        }
+        int endIndex = json.indexOf("\"", startIndex);
+        if (endIndex == -1) {
+            throw new GradleException("Latest version key not found");
+        }
+        String version = json.substring(startIndex, endIndex);
+        if (!version.matches("[0-9]+(\\.[0-9]+)*")) {
+            throw new GradleException("Latest version key invalid");
+        }
+        return version;
     }
 
     private String snykWrapperFileName() {

@@ -36,7 +36,7 @@ public class SnykBinaryTask extends DefaultTask {
             if (version.contains("(standalone)")) {
                 String[] versionSplit = version.split(" ");
                 Version current = Version.of(versionSplit[0]);
-                Version latest = Version.of(latestVersion.substring(1,latestVersion.length()));
+                Version latest = Version.of(latestVersion);
                 if (latest.isGreaterThan(current)) {
                     log.lifecycle("auto update snyk binary: {} -> {}", current, latest);
                     version = cliDownloader.downloadLatestVersion();
@@ -56,26 +56,38 @@ public class SnykBinaryTask extends DefaultTask {
     }
 
     private Optional<String> getSnykVersion() {
-        Runner.Result versionResult = Runner.runCommand("snyk -version");
-        if (versionResult.failed()) {
+        Optional standaloneVersion = checkStandAloneVersion();
+        if (standaloneVersion.isPresent()) {
             Meta.getInstance().setStandAlone(true);
-            log.lifecycle("look for standalone binary");
-            if (SystemUtil.isWindows()) {
-                versionResult = Runner.runCommand("snyk.exe -version");
-                Meta.getInstance().setBinary("snyk.exe");
-            } else {
-                versionResult = Runner.runCommand("./snyk -version");
-                Meta.getInstance().setBinary("./snyk");
-            }
-            if (versionResult.failed()) {
-                log.lifecycle("no snyk standalone found");
-                return Optional.empty();
-            }
+            return standaloneVersion;
         } else {
             Meta.getInstance().setStandAlone(false);
-            Meta.getInstance().setBinary("snyk");
+            return getSystemVersion();
         }
+    }
 
+    private Optional getSystemVersion() {
+        Runner.Result versionResult = Runner.runCommand("snyk -version");
+        if (versionResult.failed()) {
+            return Optional.empty();
+        }
+        return Optional.of(versionResult.output.trim());
+    }
+
+    private Optional checkStandAloneVersion() {
+        log.lifecycle("look for standalone binary");
+        Runner.Result versionResult;
+        if (SystemUtil.isWindows()) {
+            versionResult = Runner.runCommand("snyk.exe -version");
+            Meta.getInstance().setBinary("snyk.exe");
+        } else {
+            versionResult = Runner.runCommand("./snyk -version");
+            Meta.getInstance().setBinary("./snyk");
+        }
+        if (versionResult.failed()) {
+            log.lifecycle("no snyk standalone found");
+            return Optional.empty();
+        }
         return Optional.of(versionResult.output.trim());
     }
 }
