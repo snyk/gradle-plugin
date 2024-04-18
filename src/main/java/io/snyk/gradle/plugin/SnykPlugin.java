@@ -21,7 +21,9 @@ public class SnykPlugin implements Plugin<Project> {
         SnykTestTask snykTestTask = project.getTasks().create("snyk-test", SnykTestTask.class);
         SnykMonitorTask snykMonitorTask = project.getTasks().create("snyk-monitor", SnykMonitorTask.class);
         SnykBinaryTask snykBinaryTaks = project.getTasks().create("snyk-check-binary", SnykBinaryTask.class);
+        SnykCodeTestTask snykCodeTask = project.getTasks().create("snyk-code", SnykCodeTestTask.class);
         snykTestTask.dependsOn(snykBinaryTaks);
         snykMonitorTask.dependsOn(snykBinaryTaks);
+        snykCodeTask.dependsOn(snykBinaryTaks);
     }
 }
