@@ -1,7 +1,19 @@
 version: 2.1
 
 orbs:
-  prodsec: snyk/prodsec-orb@1.0
+  prodsec: snyk/prodsec-orb@1
+
+jobs:
+  security-scans:
+    resource_class: small
+    docker:
+      - image: circleci/openjdk:11-jdk-stretch
+    steps:
+      - checkout
+      - prodsec/security_scans:
+          mode: auto
+          release-branch: master
+          iac-scan: disabled
 
 workflows:
   version: 2
@@ -12,3 +24,11 @@ workflows:
           context:
             - snyk-bot-slack
           channel: os-team-managed-alerts
+          filters:
+            branches:
+              ignore:
+                - master
+
+      - security-scans:
+          name: Security Scans
+          context: open_source-managed
