@@ -12,7 +12,7 @@ public class SnykExtension {
     boolean autoDownload = true;
     boolean autoUpdate = false;
 
-    private static final String[] severities = new String[]{"high", "medium", "low"};
+    private static final String[] severities = new String[]{"critical", "high", "medium", "low"};
 
     public void setArguments(String arguments) {
         this.arguments = arguments;
@@ -26,7 +26,7 @@ public class SnykExtension {
         if (Arrays.stream(severities).anyMatch(severity::equals)) {
             this.severity = severity;
         } else {
-            throw new GradleException("Severity should either high|medium|low or empty");
+            throw new GradleException("Severity should either critical|high|medium|low or empty");
         }
     }
 
