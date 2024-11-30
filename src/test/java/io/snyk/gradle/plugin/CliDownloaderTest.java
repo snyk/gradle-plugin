@@ -16,7 +16,7 @@ public class CliDownloaderTest {
 
     Logger logger = mock(Logger.class);
     CliDownloader downloader = new CliDownloader(logger);
-    File snyk = new File("snyk");
+    File snyk = SystemUtil.isWindows() ? new File("snyk.exe") : new File("snyk");
 
     @Before
     public void init() {
