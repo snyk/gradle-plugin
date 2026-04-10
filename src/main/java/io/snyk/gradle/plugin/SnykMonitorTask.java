@@ -3,7 +3,7 @@ package io.snyk.gradle.plugin;
 import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 
-public class SnykMonitorTask extends SnykTask {
+public abstract class SnykMonitorTask extends SnykTask {
 
 
     @TaskAction
@@ -14,8 +14,8 @@ public class SnykMonitorTask extends SnykTask {
         Runner.Result output = runSnykCommand("monitor");
         log.lifecycle(output.output);
 
-        log.debug("severity: {}", extension.severity);
-        if (output.exitcode > 0 && extension.severity != null) {
+        log.debug("severity: {}", getSnykSeverity().getOrNull());
+        if (output.exitcode > 0 && getSnykSeverity().getOrNull() != null) {
             throw new GradleException("Snyk Test failed");
         }
     }

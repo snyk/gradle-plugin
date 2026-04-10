@@ -3,22 +3,27 @@ package io.snyk.gradle.plugin;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.logging.Logger;
+import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.IOException;
 import java.util.Optional;
 
-public class SnykBinaryTask extends DefaultTask {
+public abstract class SnykBinaryTask extends DefaultTask {
 
-    private Logger log = getProject().getLogger();
+    private Logger log = getLogger();
     private CliDownloader cliDownloader = new CliDownloader(log);
 
-    SnykExtension extension;
+    @Input
+    protected abstract Property<Boolean> getSnykAutoUpdate();
+    
+    @Input
+    protected abstract Property<Boolean> getSnykAutoDownload();
 
     @TaskAction
     public void checkSnykBinary() {
         log.debug("Snyk Binary Task");
-        extension = (SnykExtension) getProject().getExtensions().findByName("snyk");
         Optional<String> maybeVersion = getSnykVersion();
 
         String version = maybeVersion.map(this::autoUpgrade)
@@ -27,7 +32,7 @@ public class SnykBinaryTask extends DefaultTask {
     }
 
     private String autoUpgrade(String version) {
-        if (!extension.autoUpdate) {
+        if (Boolean.FALSE.equals(getSnykAutoUpdate().get())) {
             return version;
         }
 
@@ -49,7 +54,7 @@ public class SnykBinaryTask extends DefaultTask {
     }
 
     private String downloadCli() {
-        if (extension.autoDownload) {
+        if (Boolean.TRUE.equals(getSnykAutoDownload().get())) {
             return cliDownloader.downloadLatestVersion();
         }
         throw new GradleException("No Snyk binary found, set autoDownload to true to download the binary");
