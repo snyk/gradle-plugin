@@ -94,7 +94,9 @@ public class CliDownloader {
             FileOutputStream fos = new FileOutputStream(fileName)) {
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
             log.lifecycle("Downloading finished");
-            setFilePermissions(fileName);
+            if (!SystemUtil.isWindows()) {
+                setFilePermissions(fileName);
+            }
         }
     }
 
