@@ -33,9 +33,9 @@ repositories{
 
 // dependencies of this plugin
 dependencies {
-    testImplementation('org.spockframework:spock-core:2.0-groovy-2.5')
+    testImplementation('org.spockframework:spock-core:2.3-groovy-2.5')
     testImplementation 'junit:junit:4.13.1'
-    testImplementation 'org.mockito:mockito-core:2.7.22'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
 }
 
 
