@@ -19,9 +19,9 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '8.x'
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v4
         with:
-          node-version: 12.16.1
+          node-version: '22'
       - name: Install Snyk CLI from NPM
         run: npm install -g snyk
       - name: Clean build
