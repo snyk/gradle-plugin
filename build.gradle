@@ -36,6 +36,12 @@ dependencies {
     testImplementation('org.spockframework:spock-core:2.3-groovy-2.5')
     testImplementation 'junit:junit:4.13.1'
     testImplementation 'org.mockito:mockito-core:4.11.0'
+
+    constraints {
+        testImplementation('org.objenesis:objenesis:3.6') {
+            because 'mockito-core 4.11.0 pulls objenesis 3.3 (SNYK-JAVA-ORGOBJENESIS-21755439)'
+        }
+    }
 }
 
 
