@@ -5,8 +5,8 @@ jobs:
     name: "Gradle Wrapper Validation"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: gradle/wrapper-validation-action@v1
+      - uses: actions/checkout@v7.0.1
+      - uses: gradle/actions/wrapper-validation@v6.4.1
   pipeline:
     name: snyk gradle plugin pipeline
     runs-on: ubuntu-latest
@@ -15,11 +15,13 @@ jobs:
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-java@v6.3.0
         with:
+          distribution: zulu
           java-version: '8.x'
-      - uses: actions/setup-node@v4
+          problem-matcher: true
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version: '22'
       - name: Install Snyk CLI from NPM
